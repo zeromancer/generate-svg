@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>SVG.js</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/2.6.3/svg.js"></script>
+</head>
+
+<body>
+    <div id="drawing"></div>
+</body>
+
+</html>
+<script>
+    function getRandomColor() {
+        var letters = '0123456789ABCDEF';
+        var color = '#';
+        for (var i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        //console.log(color)
+        return color;
+    }
+
+    Math.randomUntil = function (a) {
+        return Math.floor(Math.random() * a);
+    }
+    Math.randomBetween = function (a, b) {
+        return Math.floor(Math.random() * (b - a + 1) + a);
+    };
+
+    var board_size = 10
+    var elemSize = 70
+    var draw = SVG('drawing').size(board_size * elemSize, board_size * elemSize)
+
+    var patternsAmount = board_size*board_size
+    var patterns = []
+    for (var i = 0; i < patternsAmount; i++) {
+        var p = draw.pattern(10, 10, function (add) {
+            add.rect(10, 10).fill(getRandomColor())
+            add.circle(Math.randomBetween(3, 11))
+            .fill(getRandomColor())
+            //add.rect(5, 5).move(5, 5)
+            add.rotate(35)
+        })
+        patterns.push(p)
+    }
+    for (var y = 0; y < board_size; y++) {
+        for (var x = 0; x < board_size; x++) {
+            var r = draw.rect(elemSize, elemSize)
+                .move(x * elemSize, y * elemSize)
+                //.fill(patterns[Math.floor(Math.random() * patterns.length)])
+                .fill(patterns[y*board_size+x])
+        }
+    }
+</script>

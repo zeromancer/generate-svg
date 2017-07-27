@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>SVG.js</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/2.6.3/svg.js"></script>
+</head>
+
+<body>
+    <div id="drawing"></div>
+</body>
+
+</html>
+<script>
+    function getRandomColor() {
+        var letters = '0123456789ABCDEF';
+        var color = '#';
+        for (var i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        //console.log(color)
+        return color;
+    }
+
+    Math.randomUntil = function (a) {
+        return Math.floor(Math.random() * a);
+    }
+    Math.randomBetween = function (a, b) {
+        return Math.floor(Math.random() * (b - a + 1) + a);
+    };
+    Math.randomBool = function () {
+        return Math.random() >= 0.5;
+    }
+    Math.randomBoolNumber = function () {
+        return Math.random() >= 0.5 ? 1 : 0;
+    }
+
+    var maxSteps = 20
+    var stepMin = 10
+    var stepMax = 80
+    var maxX = 100
+    var maxY = 100
+
+
+    var x = 0
+    var y = maxY
+    var points = [x, y]
+    var vertical = true
+    var rising = true
+
+    function step(vertical) {
+        if (vertical) { // choose which direction to climb: x or y
+            x += Math.randomBetween(stepMin, stepMax)
+            x = rising ? Math.min(x, maxX) : Math.min(x, 2 * maxX)
+        } else {
+            y += (rising ? -1 : 1) * Math.randomBetween(stepMin, stepMax)
+            y = rising ? Math.max(0, y) : Math.min(y, maxY)
+            if (rising && y == 0)
+                rising = false
+
+        }
+    }
+
+    for (var i = 0; i < maxSteps; i++) {
+        if (x >= 2 * maxX && !rising && y >= maxY)
+            break;
+        if (x < 2 * maxX && (!rising && y < maxY || rising && y > 0)) {
+            //var chooseX = Math.randomBool()
+            vertical = !vertical
+            step(vertical)
+        } else if (rising && x < maxX || !rising && x < 2 * maxX) {
+            step(true)
+        } else {
+            step(false)
+        }
+        //console.log("i", i, "x:", x, "y:", y, "rising:", rising)
+        points.push(x, y)
+    }
+
+    var draw = SVG('drawing').size(700, 700)
+
+
+    var pattern = draw.pattern(20, 20, function (add) {
+        //add.rect(20, 20).fill('#f06')
+        //add.rect(10, 10)
+        add.rect(Math.randomBetween(3,15), Math.randomBetween(3,15))
+        //.move(10, 10)
+    })
+
+
+    draw
+        .polygon(points)
+        .fill(getRandomColor())
+        .stroke({
+            width: 1
+        })
+        .fill(pattern)
+</script>

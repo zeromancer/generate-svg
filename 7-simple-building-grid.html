@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>SVG.js</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/2.6.3/svg.js"></script>
+</head>
+
+<body>
+    size: <input type="range" id="elemSize" min="10" max="150" value="100" step="10">
+    min step: <input type="range" id="stepMin" min="1" max="100" value="5" step="5">
+    max step: <input type="range" id="stepMax" min="1" max="100" value="50" step="10">
+    <button onclick="draw_grid()">Redraw</button>
+    <div id="drawing"></div>
+</body>
+
+</html>
+<script>
+    function getRandomColor() {
+        var letters = '0123456789ABCDEF';
+        var color = '#';
+        for (var i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        //console.log(color)
+        return color;
+    }
+
+    Math.randomUntil = function (a) {
+        return Math.floor(Math.random() * a);
+    }
+    Math.randomBetween = function (a, b) {
+        return Math.floor(Math.random() * (b - a + 1) + a);
+    };
+    Math.randomBool = function () {
+        return Math.random() >= 0.5;
+    }
+    Math.randomBoolNumber = function () {
+        return Math.random() >= 0.5 ? 1 : 0;
+    }
+
+
+    var board_size = 10
+    var elemSize = 100
+    var draw = SVG('drawing').size(board_size * elemSize, board_size * elemSize)
+
+
+
+    var maxX = elemSize
+    var maxY = elemSize / 2
+    var stepMin = Math.floor(elemSize * 0.05)
+    var stepMax = Math.floor(elemSize * 0.4)
+    var maxSteps = 20
+
+    function single_building_points() {
+
+        var x = 0
+        var y = maxY
+        var points = [x, y]
+        var vertical = true
+        var rising = true
+
+        function step(vertical) {
+            if (vertical) { // choose which direction to climb: x or y
+                x += Math.randomBetween(stepMin, stepMax)
+                x = rising ? Math.min(x, maxX) : Math.min(x, 2 * maxX)
+            } else {
+                y += (rising ? -1 : 1) * Math.randomBetween(stepMin, stepMax)
+                y = rising ? Math.max(0, y) : Math.min(y, maxY)
+                if (rising && y == 0)
+                    rising = false
+
+            }
+        }
+
+        while (x < 2 * maxX && (rising || !rising && y < maxY)) {
+
+            if (x < 2 * maxX && (!rising && y < maxY || rising && y > 0)) {
+                vertical = !vertical
+                step(vertical)
+            } else if (rising && x < maxX || !rising && x < 2 * maxX) {
+                step(true)
+            } else {
+                step(false)
+            }
+            //console.log("i", i, "x:", x, "y:", y, "rising:", rising)
+            points.push(x, y)
+        }
+        return points;
+    }
+
+
+    function random_building_pattern(draw) {
+        var pattern = draw.pattern(16, 16, function (add) {
+            add.rect(16, 16).fill(getRandomColor())
+            add.rect(Math.randomBetween(3, 15), Math.randomBetween(3, 15))
+        })
+        return pattern;
+    }
+
+    function draw_single_building(draw, pattern) {
+        var building_points = single_building_points()
+        var building = draw
+            .polygon(building_points)
+            .fill(getRandomColor())
+            .stroke({
+                width: 2
+            })
+            .fill(pattern)
+        return building
+    }
+
+    function draw_single_building_random_pattern(draw) {
+        var pattern = random_building_pattern(draw)
+        var building = draw_single_building(draw, pattern)
+        return building
+    }
+
+    function draw_grid() {
+        draw.clear()
+        elemSize = document.getElementById('elemSize').value
+        stepMin = document.getElementById('stepMin').value
+        stepMax = document.getElementById('stepMax').value
+
+        for (var y = 0; y < board_size; y++) {
+            for (var x = 0; x < board_size; x++) {
+                var b = draw_single_building_random_pattern(draw)
+                b.move(x * elemSize, y * elemSize)
+            }
+        }
+    }
+    draw_grid()
+</script>

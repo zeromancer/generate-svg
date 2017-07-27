@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>SVG.js</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/2.6.3/svg.js"></script>
+</head>
+
+<body>
+    <div id="drawing"></div>
+</body>
+
+</html>
+<script>
+    function getRandomColor() {
+        var letters = '0123456789ABCDEF';
+        var color = '#';
+        for (var i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        //console.log(color)
+        return color;
+    }
+    
+    var draw = SVG('drawing').size(300, 300)
+
+    var rect = draw.rect(100, 100)
+        .attr({
+            fill: '#f06'
+        })
+
+    var pattern = draw.pattern(20, 20, function (add) {
+        add.rect(20, 20).fill(getRandomColor())
+        add.rect(10, 10)
+        add.rect(10, 10).move(10, 10)
+    })
+
+    var rect1 = draw.rect(100, 100)
+        //.attr({
+        //    fill: '#f06'
+        //})
+        .move(100, 0)
+        .fill(pattern)
+</script>

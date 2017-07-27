@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>SVG.js</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/2.6.3/svg.js"></script>
+</head>
+
+<body>
+    <div id="drawing"></div>
+</body>
+
+</html>
+<script>
+    function getRandomColor() {
+        var letters = '0123456789ABCDEF';
+        var color = '#';
+        for (var i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        //console.log(color)
+        return color;
+    }
+
+    Math.randomUntil = function (a) {
+        return Math.floor(Math.random() * a);
+    }
+    Math.randomBetween = function (a, b) {
+        return Math.floor(Math.random() * (b - a + 1) + a);
+    };
+    Math.randomBool = function () {
+        return Math.random() >= 0.5;
+    }
+    Math.randomBoolNumber = function () {
+        return Math.random() >= 0.5 ? 1 : 0;
+    }
+
+    var patternsAmount = 10
+    var board_size = patternsAmount
+    var elemSize = 50
+    var draw = SVG('drawing').size(board_size * elemSize, board_size * elemSize)
+
+    var patterns = []
+
+    for (var i = 1; i < 5; i++) // full screen wave
+        patterns.push(
+            draw.pattern(10, 10, function (add) {
+                add.line(0, 10, 5, 0).stroke({
+                    width: i
+                })
+                add.line(5, 0, 10, 10).stroke({
+                    width: i
+                })
+            })
+        )
+    for (var i = 1; i < 3; i++) // middle wave
+        patterns.push(
+            draw.pattern(10, 10, function (add) {
+                add.line(0, 8, 5, 2).stroke({
+                    width: i
+                })
+                add.line(5, 2, 10, 8).stroke({
+                    width: i
+                })
+            })
+        )
+    for (var i = 1; i < 3; i++) // hills
+        patterns.push(
+            draw.pattern(10, 10, function (add) {
+                add.line(2, 8, 5, 2).stroke({
+                    width: i
+                })
+                add.line(5, 2, 8, 8).stroke({
+                    width: i
+                })
+            })
+        )
+    for (var i = 1; i < 6; i++) // full screen x
+        patterns.push(
+            draw.pattern(10, 10, function (add) {
+                add.line(0, 0, 10, 10).stroke({
+                    width: i
+                })
+                add.line(0, 10, 10, 0).stroke({
+                    width: i
+                })
+            })
+        )
+    for (var i = 1; i < 4; i++) // centered x
+        patterns.push(
+            draw.pattern(10, 10, function (add) {
+                add.line(2, 2, 8, 8).stroke({
+                    width: i
+                })
+                add.line(2, 8, 8, 2).stroke({
+                    width: i
+                })
+            })
+        )
+    for (var i = 1; i < 3; i++) // crosses
+        patterns.push(
+            draw.pattern(10, 10, function (add) {
+                add.line(2, 5, 8, 5).stroke({
+                    width: i
+                })
+                add.line(5, 2, 5, 8).stroke({
+                    width: i
+                })
+            })
+        )
+    for (var i = 1; i < patternsAmount; i++)
+        patterns.push(
+            draw.pattern(10, 10, function (add) {
+                add.rect(i,i).fill('#000').move((10-i)/2,(10-i)/2)
+            })
+        )
+
+
+
+
+    for (var i = 1; i < patternsAmount; i++)
+        patterns.push(
+            draw.pattern(10, 10, function (add) {
+                add.line(0, 5, 10, 5).stroke({
+                    width: i
+                })
+            }).rotate(45)
+        )
+    for (var i = 1; i < patternsAmount; i++)
+        patterns.push(
+            draw.pattern(10, 10, function (add) {
+                add.line(0, 5, 10, 5).stroke({
+                    width: i
+                })
+            }).rotate(30)
+        )
+    for (var i = 1; i < patternsAmount; i++)
+        patterns.push(
+            draw.pattern(10, 10, function (add) {
+                add.line(0, 5, 10, 5).stroke({
+                    width: i
+                })
+            }).rotate(60)
+        )
+    for (var i = 1; i < patternsAmount; i++) {
+        var p = draw.pattern(10, 10, function (add) {
+            add
+                .line(0, 5, 10, 5)
+                .stroke({
+                    width: i
+                })
+        })
+        patterns.push(p)
+    }
+    for (var i = 1; i < patternsAmount; i++) {
+        var p = draw.pattern(10, 10, function (add) {
+            add
+                .line(0, 5, 10, 5)
+                .stroke({
+                    width: i
+                })
+        })
+        patterns.push(p)
+    }
+    for (var i = 1; i < patternsAmount; i++)
+        patterns.push(
+            draw.pattern(10, 10, function (add) {
+                add
+                    .line(5, 0, 5, 10)
+                    .stroke({
+                        width: i
+                    })
+            })
+        )
+
+    for (var i = 1; i < patternsAmount; i++) {
+        var p = draw.pattern(10, 10, function (add) {
+            add.circle(i)
+        })
+        patterns.push(p)
+    }
+    for (var i = 1; i < patternsAmount; i++)
+        patterns.push(
+            draw.pattern(10, 10, function (add) {
+                add.circle(i)
+            }).rotate(45)
+        )
+    for (var i = 1; i < patternsAmount; i++)
+        patterns.push(
+            draw.pattern(10, 10, function (add) {
+                add.circle(i)
+            }).rotate(30)
+        )
+    for (var i = 1; i < patternsAmount; i++) {
+        var p = draw.pattern(10, 10, function (add) {
+            add
+                .rect(i, i)
+                .move((10 - i) / 2, (10 - i) / 2)
+        })
+        patterns.push(p)
+    }
+
+    for (var i = 0; i < patterns.length; i++) {
+        var y = Math.floor(i / (patternsAmount-1))
+        var x = Math.floor(i % (patternsAmount-1))
+        //console.log("x:", x, "y:", y)
+        var r = draw.rect(elemSize, elemSize)
+            .move(x * elemSize, y * elemSize)
+            .fill(patterns[i])
+    }
+</script>
