@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>SVG Tutorial</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/2.6.3/svg.js"></script>
+</head>
+
+<body>
+    <a id="drawing">
+    </a>
+</body>
+
+</html>
+<!--
+view/edit online:
+http://jsbin.com/Udeyaje/2/edit?js,output
+    -->
+<script>
+
+    var draw = SVG('drawing').size(200, 200)
+
+    var rect = draw.rect(100, 100)
+        .attr({
+            fill: '#f06'
+        })
+
+    // how to download svg: https://stackoverflow.com/questions/23218174/how-do-i-save-export-an-svg-file-after-creating-an-svg-with-d3-js-ie-safari-an
+    var svg = document.getElementById("drawing");
+    var serializer = new XMLSerializer();
+    var source = serializer.serializeToString(svg);
+
+    //add name spaces.
+    if (!source.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)) {
+        source = source.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
+    }
+    if (!source.match(/^<svg[^>]+"http\:\/\/www\.w3\.org\/1999\/xlink"/)) {
+        source = source.replace(/^<svg/, '<svg xmlns:xlink="http://www.w3.org/1999/xlink"');
+    }
+
+    //add xml declaration
+    source = '<?xml version="1.0" standalone="no"?>\r\n' + source;
+
+    //convert svg source to URI data scheme.
+    var url = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(source);
+
+    //set url value to a element's href attribute.
+    document.getElementById("drawing").href = url;
+</script>

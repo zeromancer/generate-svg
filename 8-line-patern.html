@@ -38,7 +38,7 @@
     var patternsAmount = 10
     var board_size = patternsAmount
     var elemSize = 50
-    var draw = SVG('drawing').size(board_size * elemSize, board_size * elemSize)
+    var draw = SVG('drawing').size(board_size * elemSize, 10*board_size * elemSize)
 
     var patterns = []
 
@@ -75,7 +75,7 @@
                 })
             })
         )
-    for (var i = 1; i < 6; i++) // full screen x
+    for (var i = 1; i < 6; i++) // full screen crossed lines
         patterns.push(
             draw.pattern(10, 10, function (add) {
                 add.line(0, 0, 10, 10).stroke({
@@ -86,7 +86,7 @@
                 })
             })
         )
-    for (var i = 1; i < 4; i++) // centered x
+    for (var i = 1; i < 4; i++) // centered cross
         patterns.push(
             draw.pattern(10, 10, function (add) {
                 add.line(2, 2, 8, 8).stroke({
@@ -97,7 +97,7 @@
                 })
             })
         )
-    for (var i = 1; i < 3; i++) // crosses
+    for (var i = 1; i < 3; i++) // pluses
         patterns.push(
             draw.pattern(10, 10, function (add) {
                 add.line(2, 5, 8, 5).stroke({
@@ -108,70 +108,35 @@
                 })
             })
         )
-    for (var i = 1; i < patternsAmount; i++)
+    for (var i = 1; i < patternsAmount; i++) // squares
         patterns.push(
             draw.pattern(10, 10, function (add) {
-                add.rect(i,i).fill('#000').move((10-i)/2,(10-i)/2)
+                add.rect(i, i)
+                    .move((10 - i) / 2, (10 - i) / 2)
             })
         )
-
-
-
-
-    for (var i = 1; i < patternsAmount; i++)
+    for (var i = 1; i < patternsAmount; i++) // 45 rotated squares
         patterns.push(
             draw.pattern(10, 10, function (add) {
-                add.line(0, 5, 10, 5).stroke({
-                    width: i
-                })
+                add.rect(i, i).fill('#000').move((10 - i) / 2, (10 - i) / 2)
             }).rotate(45)
         )
-    for (var i = 1; i < patternsAmount; i++)
-        patterns.push(
-            draw.pattern(10, 10, function (add) {
-                add.line(0, 5, 10, 5).stroke({
-                    width: i
-                })
-            }).rotate(30)
-        )
-    for (var i = 1; i < patternsAmount; i++)
-        patterns.push(
-            draw.pattern(10, 10, function (add) {
-                add.line(0, 5, 10, 5).stroke({
-                    width: i
-                })
-            }).rotate(60)
-        )
-    for (var i = 1; i < patternsAmount; i++) {
-        var p = draw.pattern(10, 10, function (add) {
-            add
-                .line(0, 5, 10, 5)
-                .stroke({
-                    width: i
-                })
-        })
-        patterns.push(p)
-    }
-    for (var i = 1; i < patternsAmount; i++) {
-        var p = draw.pattern(10, 10, function (add) {
-            add
-                .line(0, 5, 10, 5)
-                .stroke({
-                    width: i
-                })
-        })
-        patterns.push(p)
-    }
-    for (var i = 1; i < patternsAmount; i++)
-        patterns.push(
-            draw.pattern(10, 10, function (add) {
-                add
-                    .line(5, 0, 5, 10)
-                    .stroke({
-                        width: i
-                    })
-            })
-        )
+
+    var rotations = [0, 30, 45, 60, 90,-30,-45,-60];
+    var rotationsReduced = [0, 30, 45, 60];
+
+    rotations.forEach(function (rot) {
+        for (var i = 1; i < patternsAmount; i++) // 45 rotated squares
+            patterns.push(
+                draw.pattern(10, 10, function (add) {
+                    add
+                        .line(5, 0, 5, 10)
+                        .stroke({
+                            width: i
+                        })
+                }).rotate(rot)
+            )
+    });
 
     for (var i = 1; i < patternsAmount; i++) {
         var p = draw.pattern(10, 10, function (add) {
@@ -191,18 +156,11 @@
                 add.circle(i)
             }).rotate(30)
         )
-    for (var i = 1; i < patternsAmount; i++) {
-        var p = draw.pattern(10, 10, function (add) {
-            add
-                .rect(i, i)
-                .move((10 - i) / 2, (10 - i) / 2)
-        })
-        patterns.push(p)
-    }
 
+    // draw all
     for (var i = 0; i < patterns.length; i++) {
-        var y = Math.floor(i / (patternsAmount-1))
-        var x = Math.floor(i % (patternsAmount-1))
+        var y = Math.floor(i / (patternsAmount - 1))
+        var x = Math.floor(i % (patternsAmount - 1))
         //console.log("x:", x, "y:", y)
         var r = draw.rect(elemSize, elemSize)
             .move(x * elemSize, y * elemSize)
