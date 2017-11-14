@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>SVG Tutorial</title>
+  </head>
+<body>
+</body>
+</html>
+<script>
+
+function rand(min, max) {
+    return parseInt(Math.random() * (max - min + 1), 10) + min;
+}
+
+function get_random_color() {
+    var h = rand(1, 360); // color hue between 1 and 360
+    var s = rand(30, 100); // saturation 30-100%
+    var l = rand(30, 70); // lightness 30-70%
+    return 'hsl(' + h + ',' + s + '%,' + l + '%)';
+}
+
+for (var i = 0; i < 500; i++) {
+    var div = document.createElement('div');
+    div.style.backgroundColor = get_random_color();
+    div.style.height = "33px";
+    div.style.width = "33px";
+    div.style.float = "left";
+    document.body.appendChild(div);
+}
+
+</script>

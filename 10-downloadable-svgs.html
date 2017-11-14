@@ -1,43 +1,50 @@
 <!DOCTYPE html>
 <html>
-
-<head>
+  <head>
     <title>SVG Tutorial</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/2.6.3/svg.js"></script>
-</head>
-
+  </head>
 <body>
-    <a id="drawing">
-    </a>
 </body>
-
 </html>
-<!--
-view/edit online:
-http://jsbin.com/Udeyaje/2/edit?js,output
-    -->
 <script>
-    var draw = SVG('drawing').size(200, 200)
 
-    var rect = draw.rect(100, 100)
-        .attr({
-            fill: '#f06'
-        })
-
-    // Encode an SVG element as a base64 data uri.
-    function svgToBase64Image(svgElement) {
-        var div = document.createElement('div');
-        div.appendChild(svgElement.cloneNode(true));
-        var b64 = window.btoa(div.innerHTML);
-        return 'data:image/svg+xml;base64,' + b64;
+  function makeSvgDownloadable(svgElem){
+    var serializer = new XMLSerializer();
+    var source = serializer.serializeToString(svgElem);
+    if (!source.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)) {
+        source = source.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
     }
-    var svgs = document.getElementsByTagName('svg');
-    var urls = [];
-    for (var i = 0; i < svgs.length; i++)
-        urls.push('url("' + svgToBase64Image(svgs[i]) + '")');
-    var url = urls.join(',');
-    var msg = 'Base64 CSS image (for cross-browser support):' +
-        '<br><br>background: ' + url + ';';
-    document.getElementById('code').innerHTML = msg;
-    document.body.style.background = url;
+    if (!source.match(/^<svg[^>]+"http\:\/\/www\.w3\.org\/1999\/xlink"/)) {
+        source = source.replace(/^<svg/, '<svg xmlns:xlink="http://www.w3.org/1999/xlink"');
+    }
+    source = '<?xml version="1.0" standalone="no"?>\r\n' + source;
+    var url = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(source);
+    svgElem.href = url;
+  }
+
+  var d1 = document.createElement("a")
+  d1.setAttribute("id","d1")
+  document.body.append(d1)
+
+  //var draw = SVG.adopt(d1)
+  var draw = SVG(d1.id)
+  draw.size(100,100)
+  draw.rect(100,100)
+  //draw.fill("#f06")
+
+  let p1 = draw.pattern(10, 10, function (add) {
+      add.rect(10, 10).fill(getRandomColor())
+      add.circle(Math.randomBetween(3, 11))
+      .fill(getRandomColor())
+      //add.rect(5, 5).move(5, 5)
+      add.rotate(35)
+  })
+  draw.fill(p1)
+
+
+  makeSvgDownloadable(d1)
+
+
+
 </script>
