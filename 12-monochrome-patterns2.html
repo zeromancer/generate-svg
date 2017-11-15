@@ -1,48 +1,59 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>SVG Patterns 2</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/2.6.3/svg.js"></script>
-  </head>
+
+<head>
+  <title>SVG Patterns 2</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/2.6.3/svg.js"></script>
+</head>
+
 <body>
 </body>
+
 </html>
 <script type="text/javascript" src="P10.js"></script>
 <script>
-
-  function makeSvgDownloadable(svgElem,name){
-    svgElem.download = name+'.svg';
+  function makeSvgDownloadable(svgElem, name) {
+    svgElem.download = name + '.svg';
     xml = (new XMLSerializer()).serializeToString(svgElem);
     svgElem.href = 'data:application/octet-stream;base64,' + btoa(xml);
   }
 
-  Math.guid = function() {
-      var S4 = function() {
-         return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
-      };
-      return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
+  Math.guid = function () {
+    var S4 = function () {
+      return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+    };
+    return (S4() + S4() + "-" + S4() + "-" + S4() + "-" + S4() + "-" + S4() + S4() + S4());
   }
 
-  function createSvgElem(patternName,i){
+  function createSvgElem(patternName, backColor, strokeColor, i) {
     let el = document.createElement("a")
-    el.setAttribute("id",Math.guid())
+    el.setAttribute("id", Math.guid())
     document.body.append(el)
 
     let draw = SVG(el.id)
-    draw.size(50,50)
-    draw.rect(50,50)
-    draw.fill(P10[patternName](draw,i))
+    draw.size(50, 50)
+    draw.rect(50, 50)
+    draw.fill(P10[patternName](draw, strokeColor, i))
 
-    makeSvgDownloadable(el,patternName+"_"+i)
+    makeSvgDownloadable(el, patternName + "_" + i)
   }
 
-  for (const prop in P10){
-    //console.log(`P10.${prop} = ${P10[prop]}`);
-    let values = P10[prop+"Values"]
-    for(const i in values){
-       //console.log("",prop,i)
-       createSvgElem(prop,i)
+  //console.log("p10",P10)
+  let backColor = "#ffffaa"
+  //let strokeColor='#000000'
+  //let strokeColor = "#f06"
+  let strokeColor = "#555"
+
+  for (const prop in P10) {
+    // console.log(`P10.${prop} = ${P10[prop]}`);
+    let values = P10[prop + "Values"]
+    // console.log("stroke values: ",values)
+    for (const strokeKey in values) {
+      let stroke = values[strokeKey]
+      // console.log("", prop, backColor, strokeColor, stroke)
+      createSvgElem(prop, backColor, strokeColor, stroke)
     }
-  }
 
+    document.body.append(document.createElement("br"))
+  }
 </script>
