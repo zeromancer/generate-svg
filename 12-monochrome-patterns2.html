@@ -3,13 +3,51 @@
 
 <head>
   <title>SVG Patterns 2</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/2.6.3/svg.js"></script>
 </head>
 
-<body>
+<body style="display: table-cell;vertical-align: middle;">
+  <h1>SVG Patterns generator</h1>
+  <datalist id="rotationNumbers">
+    <option value="0">
+    <option value="30">
+    <option value="45">
+    <option value="60">
+    <option value="90">
+    <option value="120">
+    <option value="180">
+  </datalist>
+  <table>
+    <thead>
+      <tr>
+        <td><i class="fa fa-dot-circle-o"></i> Stroke Color</td>
+        <td><i class="fa fa-circle"></i> Background Color</td>
+        <td><i class="fa fa-refresh"></i> Rotation</td>
+        <td><i class="fa fa-arrows-alt"></i> Size</td>
+        <td><i class="fa fa-play-circle"></i> Generate!</td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><input type="color" id="strokeColor" value="#555555"><button id="strokeReset">reset</button><button id="strokeRand">randomize</button></td>
+        <td><input type="checkbox" id="backEnabled"><input type="color" id="backColor" value="550000"><button id="backReset">reset</button><button id="backRand">randomize</button></td>
+        <td><input id="rotationNumber" style="width:4em" type="number" min="0" max="100" step="1" value="0" list="rotationNumbers"><button id="rotationReset">reset</button></td>
+        <td><input id="sizeNumber" style="width:4em" type="number" min="10" max="100" step="1" value="10" ><button id="sizeReset">reset</button></td>
+        <td><button id="generate" onclick="redraw()">Generate</button></td>
+    </tr>
+    </tbody>
+  </table>
+  <div id="svgs"></div>
+  <br>
 </body>
 
 </html>
+<style type="text/css">
+td {
+    padding:0 15px 0 15px;
+}
+</style>
 <script type="text/javascript" src="P10.js"></script>
 <script>
 
@@ -26,36 +64,67 @@
     return (S4() + S4() + "-" + S4() + "-" + S4() + "-" + S4() + "-" + S4() + S4() + S4());
   }
 
-  function createSvgElem(patternName, backColor, strokeColor, i) {
+  function createSvgElem(parent, patternName, backColor, strokeColor, i) {
     let el = document.createElement("a")
     el.setAttribute("id", Math.guid())
-    document.body.append(el)
+    parent.appendChild(el)
 
     let draw = SVG(el.id)
+    //let draw = SVG.adopt(el)
     draw.size(50, 50)
     draw.rect(50, 50)
     draw.fill(P10[patternName](draw, backColor,strokeColor, i))
 
     makeSvgDownloadable(el, draw.node, patternName + "_" + i)
+    return el
   }
 
-  //console.log("p10",P10)
-  //let backColor = "#ffffaa"
-  let backColor = ""
-  //let strokeColor='#000000'
-  //let strokeColor = "#f06"
-  let strokeColor = "#555"
 
-  for (const prop in P10) {
-    // console.log(`P10.${prop} = ${P10[prop]}`);
-    let values = P10[prop + "Values"]
-    // console.log("stroke values: ",values)
-    for (const strokeKey in values) {
-      let stroke = values[strokeKey]
-      // console.log("", prop, backColor, strokeColor, stroke)
-      createSvgElem(prop, backColor, strokeColor, stroke)
+  let strokeColorInput = document.getElementById("strokeColor");
+  let strokeResetInput = document.getElementById("strokeReset");
+  let strokeRandInput = document.getElementById("strokeRand");
+
+  let backEnabledInput = document.getElementById("backEnabled");
+  let backColorInput = document.getElementById("backColor");
+  let backeResetInput = document.getElementById("backReset");
+  let backRandInput = document.getElementById("backRand");
+
+  let rotationNumberInput = document.getElementById("rotationNumber");
+  let rotationResetInput = document.getElementById("rotationReset");
+
+  let sizeNumberInput = document.getElementById("sizeNumber");
+  let sizeResetInput = document.getElementById("sizeReset");
+
+  let svgs = document.getElementById("svgs")
+
+  redraw()
+
+  function redraw(){
+    while (svgs.hasChildNodes()) {
+      svgs.removeChild(svgs.lastChild);
     }
+    //console.log("p10",P10)
+    //let backColor = "#ffffaa"
+    // let backgrouColor = ""
+    //let strokeColor='#000000'
+    //let strokeColor = "#f06"
+    // let strokeColor = "#555"
+    let backColor = backEnabledInput.checked ? strokeColorInput.value : ""
+    let strokeColor = backColorInput.value
+    let rotationNumber = rotationNumberInput.value
+    let sizeNumber = sizeNumberInput.value
 
-    document.body.append(document.createElement("br"))
+    for (const prop in P10) {
+      // console.log(`P10.${prop} = ${P10[prop]}`);
+      let values = P10[prop + "Values"]
+      // console.log("stroke values: ",values)
+      for (const strokeKey in values) {
+        let stroke = values[strokeKey]
+        // console.log("", prop, backColor, strokeColor, stroke)
+        let el = createSvgElem(svgs,prop, backColor, strokeColor, stroke)
+      }
+      svgs.appendChild(document.createElement("br"))
+      //document.body.append(document.createElement("br"))
+    }
   }
 </script>
